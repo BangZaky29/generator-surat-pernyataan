@@ -39,18 +39,6 @@ body {
   padding: 0 1rem;
 }
 
-.header-logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.logo-image {
-  width: 50px;
-  height: auto;
-  border-radius: 5px;
-}
-
 .header-content {
   display: flex;
   align-items: center;
@@ -330,11 +318,15 @@ body {
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   min-height: 842px;
+  /* Ukuran konsisten untuk PDF export */
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .preview-content {
   max-width: 900px;
   margin: 0 auto;
+  width: 100%;
 }
 
 .preview-title {
@@ -433,20 +425,20 @@ body {
 }
 
 .preview-signature-label {
-  margin-bottom: 2rem;
+  margin-bottom: 2.2rem;
 }
 
 .preview-signature-name {
   font-weight: 500;
   display: inline-block;
   border-bottom: 1px solid #2c3e50;
-  padding-bottom: 0.25rem;
+  padding-bottom: 0.1px;
 }
 
 .preview-signature-stamp {
-  font-size: 0.6rem;
-  /* margin-top: -0.5rem; */
-  margin-bottom: 5rcap;
+  position: relative;
+  font-size: 0.675rem;
+  margin-bottom: 4.5rcap;
   color: #7f8c8d;
 }
 
@@ -467,13 +459,13 @@ body {
   }
   
   .form-container,
-  .statement-container,
-  .preview-container {
+  .statement-container {
     padding: 1rem;
   }
   
+  /* Preview tetap dengan padding optimal untuk PDF */
   .preview-container {
-    padding: 1.5rem;
+    padding: 2rem 1.5rem;
   }
   
   .preview-title {
@@ -495,21 +487,41 @@ body {
 }
 
 @media (max-width: 480px) {
+  /* Tetap pertahankan layout untuk preview agar PDF konsisten */
   .preview-data-row {
-    flex-direction: column;
+    display: flex;
+    align-items: flex-start;
   }
   
-  .preview-data-label,
-  .preview-data-colon {
-    width: auto;
+  .preview-data-label {
+    width: 140px;
+    flex-shrink: 0;
   }
   
   .preview-data-colon {
-    display: none;
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+  }
+  
+  .preview-data-value {
+    flex: 1;
+    word-break: break-word;
   }
   
   .preview-signature {
-    justify-content: center;
+    justify-content: flex-end;
+  }
+  
+  .preview-container {
+    padding: 1.5rem 1rem;
+  }
+  
+  .preview-title {
+    font-size: 1.125rem;
+  }
+  
+  .preview-body {
+    font-size: 0.9rem;
   }
 }
 

@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react';
 import { FileText, Trash2, Download } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import logo from "./assets/logo-01.png";
 import './App.css';
 
 // Komponen Header
@@ -10,13 +9,7 @@ const Header = () => (
   <header className="header">
     <div className="header-container">
       <div className="header-content">
-        <div className="header-logo">
-          <img 
-            src={logo} 
-            alt="Nuansa Legal Logo" 
-            className="logo-image"
-          />
-        </div>
+        <FileText size={32} />
         <h1 className="header-title">Generator Surat Pernyataan</h1>
       </div>
       <p className="header-subtitle">Nuansa Lega - Buat Surat Pernyataan Formal dengan Mudah</p>
@@ -254,9 +247,9 @@ const PreviewSurat = React.forwardRef(({ formData, isVisible }, ref) => {
 
           <div className="preview-signature">
             <div className="preview-signature-content">
-              <p className="preview-signature-date">........................, {formatDate(formData.tanggalSurat)} 2018</p>
+              <p className="preview-signature-date">........................, {formatDate(formData.tanggalSurat)}</p>
               <p className="preview-signature-label">Yang membuat pernyataan,</p>
-              <p className="preview-signature-stamp">Materai Rp10.000,- <br /> & ditandatangani</p>
+              <p className="preview-signature-stamp">Materai Rp10.000,- <br />& ditandatangani</p>
               <p className="preview-signature-name">({formData.nama || '........................'})</p>
             </div>
           </div>
