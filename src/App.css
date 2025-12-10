@@ -764,3 +764,49 @@ body {
     font-size: 1rem;
   }
 }
+
+
+/* ========================================
+   HEADER LOGO STYLES
+   ======================================== */
+
+.header-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 3px;
+  margin-right: 1rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.header-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+/* Responsive untuk logo */
+@media (max-width: 768px) {
+  .header-logo {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .header-text-wrapper {
+    gap: 0.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 0.75rem;
+  }
+}

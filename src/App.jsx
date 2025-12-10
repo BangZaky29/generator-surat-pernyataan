@@ -3,16 +3,19 @@ import { FileText, Trash2, Download, Plus, X } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import './App.css';
+import logo from './assets/logo-01.png';
 
 // Komponen Header
 const Header = () => (
   <header className="header">
     <div className="header-container">
       <div className="header-content">
-        <FileText size={32} />
-        <h1 className="header-title">Generator Surat Pernyataan</h1>
+        <img src={logo} alt="Logo Nuansa Lega" className="header-logo" />
+        <div className="header-text-wrapper">
+          <h1 className="header-title">Generator Surat Pernyataan</h1>
+          <p className="header-subtitle">Nuansa Lega - Buat Surat Pernyataan Formal dengan Mudah</p>
+        </div>
       </div>
-      <p className="header-subtitle">Nuansa Lega - Buat Surat Pernyataan Formal dengan Mudah</p>
     </div>
   </header>
 );
