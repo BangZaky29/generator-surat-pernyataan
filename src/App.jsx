@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { FileText, Trash2, Download } from 'lucide-react';
+import { FileText, Trash2, Download, Plus, X } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import './App.css';
@@ -119,27 +119,68 @@ const FormInput = ({ formData, setFormData }) => {
   );
 };
 
-// Komponen Statement List
-const StatementList = () => {
-  const statements = [
-    "Tidak pernah dipidana dengan pidana penjara berdasarkan keputusan pengadilan yang telah memperoleh kekuatan hukum yang tetap karena melakukan tindak pidana kejahatan;",
-    "Tidak pernah diberhentikan dengan hormat tidak atas permintaan sendiri atau tidak dengan hormat sebagai Calon PNS atau PNS, prajurit Tentara Nasional Indonesia, anggota Kepolisian Negara Republik Indonesia, atau diberhentikan tidak dengan hormat sebagai pegawai swasta (termasuk pegawai Badan Usaha Milik Negara atau Badan Usaha Milik Daerah);",
-    "Tidak berkedudukan sebagai Calon PNS, PNS, prajurit Tentara Nasional Indonesia, atau anggota Kepolisian Negara Republik Indonesia;",
-    "Tidak menjadi anggota atau pengurus partai politik atau terlibat politik praktis;",
-    "Bersedia ditempatkan di seluruh Wilayah Negara Kesatuan Republik Indonesia atau negara lain yang ditentukan oleh instansi pemerintah."
-  ];
+// Komponen Statement Input - BARU
+const StatementInput = ({ statements, setStatements }) => {
+  const handleAddStatement = () => {
+    setStatements([...statements, '']);
+  };
+
+  const handleRemoveStatement = (index) => {
+    const newStatements = statements.filter((_, i) => i !== index);
+    setStatements(newStatements);
+  };
+
+  const handleChangeStatement = (index, value) => {
+    const newStatements = [...statements];
+    newStatements[index] = value;
+    setStatements(newStatements);
+  };
 
   return (
-    <div className="statement-container">
-      <h2 className="statement-title">Isi Pernyataan</h2>
-      <div className="statement-list">
-        {statements.map((statement, index) => (
-          <div key={index} className="statement-item">
-            <span className="statement-number">{index + 1}.</span>
-            <p className="statement-text">{statement}</p>
-          </div>
-        ))}
+    <div className="statement-input-container">
+      <div className="statement-input-header">
+        <h2 className="statement-input-title">Isi Pernyataan</h2>
+        <button
+          onClick={handleAddStatement}
+          className="btn-add-statement"
+        >
+          <Plus size={18} />
+          Tambah Pernyataan
+        </button>
       </div>
+
+      {statements.length === 0 ? (
+        <div className="statement-empty">
+          <p className="statement-empty-text">
+            Belum ada pernyataan. Klik "Tambah Pernyataan" untuk menambahkan point pernyataan.
+          </p>
+        </div>
+      ) : (
+        <div className="statement-input-list">
+          {statements.map((statement, index) => (
+            <div key={index} className="statement-input-item">
+              <div className="statement-input-item-header">
+                <label className="statement-input-item-label">
+                  Pernyataan {index + 1}
+                </label>
+                <button
+                  onClick={() => handleRemoveStatement(index)}
+                  className="btn-remove-statement"
+                >
+                  <X size={14} />
+                  Hapus
+                </button>
+              </div>
+              <textarea
+                value={statement}
+                onChange={(e) => handleChangeStatement(index, e.target.value)}
+                className="statement-input-textarea"
+                placeholder={`Masukkan isi pernyataan ke-${index + 1}`}
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
@@ -171,7 +212,7 @@ const ActionButtons = ({ onGenerate, onClear, onDownload, isGenerated, isDownloa
 );
 
 // Komponen Preview Surat
-const PreviewSurat = React.forwardRef(({ formData, isVisible }, ref) => {
+const PreviewSurat = React.forwardRef(({ formData, statements, isVisible }, ref) => {
   if (!isVisible) {
     return (
       <div className="preview-empty">
@@ -181,14 +222,6 @@ const PreviewSurat = React.forwardRef(({ formData, isVisible }, ref) => {
       </div>
     );
   }
-
-  const statements = [
-    "Tidak pernah dipidana dengan pidana penjara berdasarkan keputusan pengadilan yang telah memperoleh kekuatan hukum yang tetap karena melakukan tindak pidana kejahatan;",
-    "Tidak pernah diberhentikan dengan hormat tidak atas permintaan sendiri atau tidak dengan hormat sebagai Calon PNS atau PNS, prajurit Tentara Nasional Indonesia, anggota Kepolisian Negara Republik Indonesia, atau diberhentikan tidak dengan hormat sebagai pegawai swasta (termasuk pegawai Badan Usaha Milik Negara atau Badan Usaha Milik Daerah);",
-    "Tidak berkedudukan sebagai Calon PNS, PNS, prajurit Tentara Nasional Indonesia, atau anggota Kepolisian Negara Republik Indonesia;",
-    "Tidak menjadi anggota atau pengurus partai politik atau terlibat politik praktis;",
-    "Bersedia ditempatkan di seluruh Wilayah Negara Kesatuan Republik Indonesia atau negara lain yang ditentukan oleh instansi pemerintah."
-  ];
 
   const formatDate = (dateString) => {
     if (!dateString) return '........................';
@@ -233,12 +266,16 @@ const PreviewSurat = React.forwardRef(({ formData, isVisible }, ref) => {
           <p className="preview-statement-intro">dengan ini menyatakan dengan sesungguhnya, bahwa saya :</p>
           
           <div className="preview-statements">
-            {statements.map((statement, index) => (
-              <div key={index} className="preview-statement-item">
-                <span className="preview-statement-number">{index + 1}.</span>
-                <p className="preview-statement-text">{statement}</p>
-              </div>
-            ))}
+            {statements.length > 0 ? (
+              statements.map((statement, index) => (
+                <div key={index} className="preview-statement-item">
+                  <span className="preview-statement-number">{index + 1}.</span>
+                  <p className="preview-statement-text">{statement || '........................'}</p>
+                </div>
+              ))
+            ) : (
+              <p className="preview-no-statement">Tidak ada pernyataan</p>
+            )}
           </div>
 
           <p className="preview-closing">
@@ -249,7 +286,7 @@ const PreviewSurat = React.forwardRef(({ formData, isVisible }, ref) => {
             <div className="preview-signature-content">
               <p className="preview-signature-date">........................, {formatDate(formData.tanggalSurat)}</p>
               <p className="preview-signature-label">Yang membuat pernyataan,</p>
-              <p className="preview-signature-stamp">Materai Rp10.000,- <br />& ditandatangani</p>
+              <p className="preview-signature-stamp">Materai Rp 6000,<br />- & ditandatangani</p>
               <p className="preview-signature-name">({formData.nama || '........................'})</p>
             </div>
           </div>
@@ -270,6 +307,9 @@ const App = () => {
     tanggalSurat: new Date().toISOString().split('T')[0]
   });
 
+  const [statements, setStatements] = useState([
+    "Tidak pernah dipidana dengan pidana penjara berdasarkan keputusan pengadilan yang telah memperoleh kekuatan hukum yang tetap karena melakukan tindak pidana kejahatan;",]);
+
   const [isGenerated, setIsGenerated] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const previewRef = useRef(null);
@@ -279,6 +319,10 @@ const App = () => {
       alert('Mohon lengkapi semua data pribadi terlebih dahulu!');
       return;
     }
+    if (statements.length === 0 || statements.every(s => !s.trim())) {
+      alert('Mohon isi minimal satu pernyataan!');
+      return;
+    }
     setIsGenerated(true);
     setTimeout(() => {
       previewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -286,7 +330,7 @@ const App = () => {
   };
 
   const handleClear = () => {
-    if (confirm('Apakah Anda yakin ingin menghapus semua data?')) {
+    if (window.confirm('Apakah Anda yakin ingin menghapus semua data?')) {
       setFormData({
         nama: '',
         tempatLahir: '',
@@ -295,6 +339,7 @@ const App = () => {
         alamat: '',
         tanggalSurat: new Date().toISOString().split('T')[0]
       });
+      setStatements([]);
       setIsGenerated(false);
     }
   };
@@ -306,24 +351,72 @@ const App = () => {
     
     try {
       const element = previewRef.current;
+      
+      // Simpan style original
+      const originalStyles = {
+        width: element.style.width,
+        maxWidth: element.style.maxWidth,
+        padding: element.style.padding,
+        position: element.style.position,
+        left: element.style.left,
+        transform: element.style.transform
+      };
+      
+      // Set ukuran fixed untuk A4 (210mm = 794px at 96dpi)
+      element.style.width = '794px';
+      element.style.maxWidth = '794px';
+      element.style.padding = '60px 40px';
+      element.style.position = 'absolute';
+      element.style.left = '-9999px';
+      element.style.transform = 'scale(1)';
+      
+      // Tunggu render selesai
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
       const canvas = await html2canvas(element, {
-        scale: 2,
+        scale: 2.5,
         useCORS: true,
         logging: false,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        width: 794,
+        height: element.scrollHeight,
+        windowWidth: 794,
+        windowHeight: element.scrollHeight
       });
       
-      const imgData = canvas.toDataURL('image/png');
+      // Kembalikan style original
+      Object.keys(originalStyles).forEach(key => {
+        element.style[key] = originalStyles[key];
+      });
+      
+      const imgData = canvas.toDataURL('image/png', 1.0);
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
-        format: 'a4'
+        format: 'a4',
+        compress: true
       });
       
-      const imgWidth = 210;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const pdfWidth = 210; // A4 width in mm
+      const pdfHeight = 297; // A4 height in mm
+      const imgWidth = pdfWidth;
+      const imgHeight = (canvas.height * pdfWidth) / canvas.width;
       
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      let heightLeft = imgHeight;
+      let position = 0;
+      
+      // Tambahkan halaman pertama
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, '', 'FAST');
+      heightLeft -= pdfHeight;
+      
+      // Tambahkan halaman berikutnya jika diperlukan
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, '', 'FAST');
+        heightLeft -= pdfHeight;
+      }
+      
       pdf.save(`Surat_Pernyataan_${formData.nama.replace(/\s+/g, '_')}.pdf`);
     } catch (error) {
       console.error('Error generating PDF:', error);
@@ -341,7 +434,7 @@ const App = () => {
         <div className="main-grid">
           <div className="left-section">
             <FormInput formData={formData} setFormData={setFormData} />
-            <StatementList />
+            <StatementInput statements={statements} setStatements={setStatements} />
             <ActionButtons 
               onGenerate={handleGenerate}
               onClear={handleClear}
@@ -354,7 +447,8 @@ const App = () => {
           <div className="right-section">
             <PreviewSurat 
               ref={previewRef}
-              formData={formData} 
+              formData={formData}
+              statements={statements}
               isVisible={isGenerated}
             />
           </div>

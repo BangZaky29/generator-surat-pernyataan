@@ -318,15 +318,17 @@ body {
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   min-height: 842px;
-  /* Ukuran konsisten untuk PDF export */
   max-width: 100%;
   box-sizing: border-box;
+  overflow: visible;
+  position: relative;
 }
 
 .preview-content {
   max-width: 900px;
   margin: 0 auto;
   width: 100%;
+  overflow: visible;
 }
 
 .preview-title {
@@ -425,20 +427,20 @@ body {
 }
 
 .preview-signature-label {
-  margin-bottom: 2.2rem;
+  margin-top: -1rem;
+  margin-bottom: 1.5rem;
 }
 
 .preview-signature-name {
   font-weight: 500;
   display: inline-block;
   border-bottom: 1px solid #2c3e50;
-  padding-bottom: 0.1px;
+  padding-bottom: 0.25rem;
 }
 
 .preview-signature-stamp {
-  position: relative;
   font-size: 0.675rem;
-  margin-bottom: 4.5rcap;
+  margin-bottom: 2.5rem;
   color: #7f8c8d;
 }
 
@@ -544,5 +546,221 @@ body {
   .preview-container {
     box-shadow: none;
     padding: 0;
+  }
+}
+
+/* ========================================
+   STATEMENT INPUT CONTAINER
+   ======================================== */
+
+.statement-input-container {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.statement-input-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.statement-input-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+  color: #667eea;
+}
+
+/* ========================================
+   BUTTON ADD STATEMENT
+   ======================================== */
+
+.btn-add-statement {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background: #48bb78;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-add-statement:hover {
+  background: #38a169;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(72, 187, 120, 0.3);
+}
+
+.btn-add-statement:active {
+  transform: translateY(0);
+}
+
+/* ========================================
+   STATEMENT EMPTY STATE
+   ======================================== */
+
+.statement-empty {
+  padding: 3rem 2rem;
+  text-align: center;
+  background: #f7fafc;
+  border-radius: 8px;
+  border: 2px dashed #cbd5e0;
+}
+
+.statement-empty-text {
+  color: #ffffff;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* ========================================
+   STATEMENT INPUT LIST
+   ======================================== */
+
+.statement-input-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.statement-input-item {
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 2px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.statement-input-item:hover {
+  border-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.statement-input-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  gap: 1rem;
+}
+
+.statement-input-item-label {
+  font-weight: 600;
+  color: #000000;
+  font-size: 0.95rem;
+}
+
+/* ========================================
+   BUTTON REMOVE STATEMENT
+   ======================================== */
+
+.btn-remove-statement {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.8rem;
+  background: #f56565;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-remove-statement:hover {
+  background: #e53e3e;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(245, 101, 101, 0.3);
+}
+
+.btn-remove-statement:active {
+  transform: translateY(0);
+}
+
+/* ========================================
+   STATEMENT INPUT TEXTAREA
+   ======================================== */
+
+.statement-input-textarea {
+  width: 100%;
+  padding: 0.75rem 1rem 5rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  outline: none;
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.6;
+  background: rgb(40, 40, 40);
+}
+
+.statement-input-textarea:focus {
+  border-color: #000000;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.statement-input-textarea::placeholder {
+  color: #ffffff;
+}
+
+/* ========================================
+   PREVIEW NO STATEMENT
+   ======================================== */
+
+.preview-no-statement {
+  color: #000000;
+  font-style: italic;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: #f7fafc;
+  border-radius: 6px;
+  text-align: center;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+  .statement-input-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-add-statement {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .statement-input-item-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-remove-statement {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .statement-input-textarea {
+    font-size: 1rem;
   }
 }
