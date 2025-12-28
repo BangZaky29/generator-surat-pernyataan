@@ -3,7 +3,7 @@ import { FileText, Trash2, Download, Plus, X } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import './App.css';
-import logo from './assets/logo-01.png';
+import logo from './assets/NS_white_01.png';
 
 // Komponen Header
 const Header = () => (
@@ -24,7 +24,7 @@ const Header = () => (
 const Footer = () => (
   <footer className="footer">
     <div className="footer-container">
-      <p className="footer-text">© 2025 Generator Surat Pernyataan - Nuansa Lega</p>
+      <p className="footer-text">© 2022 Generator Surat Pernyataan - Nuansa Solution</p>
       <p className="footer-subtext">Dokumen resmi untuk keperluan administrasi</p>
     </div>
   </footer>
