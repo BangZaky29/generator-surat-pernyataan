@@ -1,0 +1,5 @@
+{
+  "name": "Generator Surat Pernyataan Resmi",
+  "description": "Aplikasi generator surat pernyataan dengan format A4, tanda tangan digital, stempel, dan export PDF.",
+  "requestFramePermissions": []
+}
