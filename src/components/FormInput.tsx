@@ -4,18 +4,23 @@ import KopSurat from './KopSurat';
 import TTDUpload from './TTDUpload';
 import StampUpload from './StampUpload';
 import Accordion from './Accordion';
-import { User, MapPin, FileType, Calendar, FileText, Building2, Stamp } from 'lucide-react';
+import { User, MapPin, FileType, Calendar, FileText, Building2, Stamp, Trash2, Plus, Info } from 'lucide-react';
+import { HistoryItem } from '../utils/localStorage';
 
 interface Props {
   data: LetterData;
   onChange: (data: LetterData) => void;
+  history: HistoryItem[];
+  onImport: (data: LetterData) => void;
+  onDeleteHistory: (id: number) => void;
 }
 
 type SectionKey = 'kop' | 'identitas' | 'info' | 'isi' | 'legalitas';
 
-const FormInput: React.FC<Props> = ({ data, onChange }) => {
+const FormInput: React.FC<Props> = ({ data, onChange, history, onImport, onDeleteHistory }) => {
   // State untuk mengontrol accordion mana yang terbuka
   const [activeSection, setActiveSection] = useState<SectionKey | null>('identitas');
+  const [showHistory, setShowHistory] = useState(false);
 
   const toggleSection = (section: SectionKey) => {
     setActiveSection(prev => prev === section ? null : section);
@@ -27,7 +32,66 @@ const FormInput: React.FC<Props> = ({ data, onChange }) => {
 
   return (
     <div className="w-full max-w-2xl mx-auto pb-24 md:pb-10 px-1 md:px-0">
-      
+
+      {/* SECTION 0: HISTORY SELECTION */}
+      <div className="mb-6 relative">
+        <div
+          onClick={() => setShowHistory(!showHistory)}
+          className="flex items-center justify-between p-4 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:border-indigo-200 hover:shadow-sm transition-all shadow-[0_2px_8px_rgba(0,0,0,0.04)] group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl group-hover:bg-indigo-100 transition-colors">
+              <Info size={18} />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-800">Riwayat Data</h3>
+              <p className="text-[10px] text-slate-500 font-medium">Gunakan data yang pernah disimpan sebelumnya</p>
+            </div>
+          </div>
+          <Plus className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${showHistory ? 'rotate-45 text-slate-600' : ''}`} />
+        </div>
+
+        {showHistory && (
+          <div className="absolute top-full left-0 right-0 z-[60] mt-2 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="max-h-60 overflow-y-auto scrollbar-hide">
+              {history.length === 0 ? (
+                <div className="p-8 text-center">
+                  <p className="text-xs text-slate-400 font-medium italic">Belum ada riwayat data tersimpan</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-slate-100">
+                  {history.map((item) => (
+                    <div key={item.id} className="p-4 hover:bg-slate-50 transition-colors flex items-center justify-between gap-4 group/item">
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold text-slate-700 truncate">{item.label}</p>
+                        <p className="text-[10px] text-slate-400 mt-0.5">{new Date(item.timestamp).toLocaleString('id-ID')}</p>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          onClick={() => {
+                            onImport(item.data);
+                            setShowHistory(false);
+                          }}
+                          className="px-3 py-1.5 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded-lg hover:bg-indigo-100 transition-colors"
+                        >
+                          Import
+                        </button>
+                        <button
+                          onClick={() => onDeleteHistory(item.id)}
+                          className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                          title="Hapus dari riwayat"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
       {/* 1. KOP SURAT */}
       <Accordion
         title="Kop Surat"
@@ -36,9 +100,9 @@ const FormInput: React.FC<Props> = ({ data, onChange }) => {
         isOpen={activeSection === 'kop'}
         onToggle={() => toggleSection('kop')}
       >
-        <KopSurat 
-            data={data.kopSurat} 
-            onChange={(kopData) => onChange({ ...data, kopSurat: kopData })} 
+        <KopSurat
+          data={data.kopSurat}
+          onChange={(kopData) => onChange({ ...data, kopSurat: kopData })}
         />
       </Accordion>
 
@@ -108,55 +172,55 @@ const FormInput: React.FC<Props> = ({ data, onChange }) => {
         onToggle={() => toggleSection('info')}
       >
         <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
-                <label className="text-xs font-medium text-gray-500 uppercase">Judul Surat</label>
-                <input
+              <label className="text-xs font-medium text-gray-500 uppercase">Judul Surat</label>
+              <input
                 type="text"
                 value={data.judulSurat}
                 onChange={(e) => handleChange('judulSurat', e.target.value.toUpperCase())}
                 className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 font-bold outline-none"
-                />
+              />
             </div>
             <div className="space-y-1">
-                <label className="text-xs font-medium text-gray-500 uppercase">Nomor Surat (Opsional)</label>
-                <input
+              <label className="text-xs font-medium text-gray-500 uppercase">Nomor Surat (Opsional)</label>
+              <input
                 type="text"
                 value={data.nomorSurat}
                 onChange={(e) => handleChange('nomorSurat', e.target.value)}
                 className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                 placeholder="No: 001/SP/2024"
-                />
+              />
             </div>
-            </div>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
-                <label className="text-xs font-medium text-gray-500 uppercase">Tempat Surat (Kota)</label>
-                <div className="relative">
+              <label className="text-xs font-medium text-gray-500 uppercase">Tempat Surat (Kota)</label>
+              <div className="relative">
                 <MapPin size={16} className="absolute left-3 top-3.5 text-gray-400" />
                 <input
-                    type="text"
-                    value={data.tempatSurat}
-                    onChange={(e) => handleChange('tempatSurat', e.target.value)}
-                    className="w-full p-3 pl-9 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="Contoh: Jakarta"
+                  type="text"
+                  value={data.tempatSurat}
+                  onChange={(e) => handleChange('tempatSurat', e.target.value)}
+                  className="w-full p-3 pl-9 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="Contoh: Jakarta"
                 />
-                </div>
+              </div>
             </div>
             <div className="space-y-1">
-                <label className="text-xs font-medium text-gray-500 uppercase">Tanggal Surat</label>
-                <div className="relative">
+              <label className="text-xs font-medium text-gray-500 uppercase">Tanggal Surat</label>
+              <div className="relative">
                 <Calendar size={16} className="absolute left-3 top-3.5 text-gray-400" />
                 <input
-                    type="date"
-                    value={data.tanggalSurat}
-                    onChange={(e) => handleChange('tanggalSurat', e.target.value)}
-                    className="w-full p-3 pl-9 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  type="date"
+                  value={data.tanggalSurat}
+                  onChange={(e) => handleChange('tanggalSurat', e.target.value)}
+                  className="w-full p-3 pl-9 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                 />
-                </div>
+              </div>
             </div>
-            </div>
+          </div>
         </div>
       </Accordion>
 
@@ -169,16 +233,16 @@ const FormInput: React.FC<Props> = ({ data, onChange }) => {
         onToggle={() => toggleSection('isi')}
       >
         <div className="space-y-2">
-            <p className="text-xs text-blue-600 bg-blue-50 p-2 rounded border border-blue-100 italic">
+          <p className="text-xs text-blue-600 bg-blue-50 p-2 rounded border border-blue-100 italic">
             Tips: Halaman akan bertambah otomatis jika teks terlalu panjang.
-            </p>
-            <textarea
+          </p>
+          <textarea
             value={data.isi}
             onChange={(e) => handleChange('isi', e.target.value)}
             rows={10}
             className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-sm leading-relaxed outline-none"
             placeholder="Tuliskan isi pernyataan Anda di sini..."
-            />
+          />
         </div>
       </Accordion>
 
@@ -191,14 +255,14 @@ const FormInput: React.FC<Props> = ({ data, onChange }) => {
         onToggle={() => toggleSection('legalitas')}
       >
         <div className="grid grid-cols-1 gap-6">
-            <TTDUpload 
+          <TTDUpload
             value={data.signatureUrl}
             onChange={(val) => handleChange('signatureUrl', val || '')}
-            />
-            <StampUpload 
+          />
+          <StampUpload
             value={data.stampUrl}
             onChange={(val) => handleChange('stampUrl', val || '')}
-            />
+          />
         </div>
       </Accordion>
 
